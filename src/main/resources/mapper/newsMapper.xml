@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper namespace="com.example.newslistservice.mapper.NewsMapper">
+        <insert id="insertNews" parameterType="com.example.newslistservice.domain.News">
+            INSERT INTO board (title, content, author_id, img, created_at)
+            VALUES (#{title}, #{content}, #{authorId}, #{img}, #{createdAt})
+        </insert>
+
+    </mapper>
+
+
+
