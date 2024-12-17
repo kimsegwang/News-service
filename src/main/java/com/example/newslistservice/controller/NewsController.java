@@ -74,11 +74,10 @@ public class NewsController {
     }
 
     @PutMapping
-    public News put(@PathVariable Long id,@Valid @RequestBody News news) {
-        return newsService.updateNews(id, news);
+    public void put(@Valid @RequestBody News news) {
+        newsService.updateNews(news);
     }
 
-    
 }
 
 

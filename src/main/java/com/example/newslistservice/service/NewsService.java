@@ -41,12 +41,7 @@ public class NewsService {
     }
 
     @Transactional
-    public News updateNews(Long id, News news) {
-        int result = newsMapper.updateNews(id, news);// Mapper 호출
-        if (result > 0) {
-            return news;
-        } else {
-            throw new RuntimeException("Failed to update news");
-        }
+    public void updateNews(News news) {
+        newsMapper.updateNews(news);// Mapper 호출
     }
 }

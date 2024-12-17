@@ -17,6 +17,6 @@ public interface NewsMapper {
 
     void deleteByIds(List<Long> ids);
 
-    int updateNews(Long id,News news);
+    void updateNews(News news);
 
 }

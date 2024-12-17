@@ -45,7 +45,7 @@
         </foreach>
     </delete>
 
-    <update id="insertNews" parameterType="com.example.newslistservice.domain.News">
+    <update id="updateNews" parameterType="com.example.newslistservice.domain.News">
         update board
         set
             title = #{title},
