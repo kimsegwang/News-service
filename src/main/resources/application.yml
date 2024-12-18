@@ -25,3 +25,6 @@ spring:
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
+
+swfm:
+  file-service-url: ${SELECT_SERVICE_URL:http://localhost:7009}/selectImage

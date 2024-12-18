@@ -1,6 +1,7 @@
 package com.example.newslistservice.mapper;
 
 import com.example.newslistservice.domain.News;
+import com.example.newslistservice.dto.DetailNewsDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,7 +14,7 @@ public interface NewsMapper {
 
     List<News> selectNewsList();
 
-    News selectNewsById(Long id);
+    List<DetailNewsDTO>  selectNewsById(Long id);
 
     void deleteByIds(List<Long> ids);
 

@@ -4,39 +4,41 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.newslistservice.mapper.NewsMapper">
-        <insert id="insertNews" parameterType="com.example.newslistservice.domain.News">
-            INSERT INTO board (title, content, author_id, img)
-            VALUES (#{title}, #{content}, #{authorId}, #{img})
-        </insert>
 
-    <resultMap id="newsResultMap" type="com.example.newslistservice.domain.News">
+    <insert id="insertNews" parameterType="com.example.newslistservice.domain.News">
+        INSERT INTO board (title, content, author_id, img)
+        VALUES (#{title}, #{content}, #{authorId}, #{img})
+    </insert>
+
+    <resultMap id="newsResultMap" type="com.example.newslistservice.dto.ListNewsDTO">
         <result property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="authorId" column="author_id"/>
-        <result property="createdAt" column="created_at"/>
+        <!-- LocalDateTime으로 매핑 -->
+        <result property="createdAt" column="created_at" javaType="java.time.LocalDateTime"/>
     </resultMap>
 
+    <resultMap id="newsDetailResultMap" type="com.example.newslistservice.dto.DetailNewsDTO">
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="img" column="img"/>
+    </resultMap>
+
+
     <select id="selectNewsList" resultMap="newsResultMap">
-        SELECT id, title, author_id, created_at
+        SELECT id,title, author_id, created_at
         FROM board
         ORDER BY id DESC
     </select>
 
-    <select id="selectNewsById" parameterType="com.example.newslistservice.domain.News">
+    <select id="selectNewsById" resultType="com.example.newslistservice.dto.DetailNewsDTO" parameterType="Long">
         SELECT
             title, content, img
         FROM board
-        where
+        WHERE
             id = #{id}
     </select>
 
-<!--    SELECT-->
-<!--    id, title, author_id, created_at-->
-<!--    FROM-->
-<!--    board-->
-<!--    ORDER BY-->
-<!--    created_at DESC-->
-<!--    LIMIT #{offset}, #{pageSize}-->
 
     <delete id="deleteByIds">
         DELETE FROM board WHERE id IN
@@ -46,19 +48,13 @@
     </delete>
 
     <update id="updateNews" parameterType="com.example.newslistservice.domain.News">
-        update board
-        set
+        UPDATE board
+        SET
             title = #{title},
             content = #{content},
             author_id = #{authorId},
             img = #{img}
-        where id = #{id}
+        WHERE id = #{id}
     </update>
 
-
-
-
 </mapper>
-
-
-
