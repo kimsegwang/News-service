@@ -2,6 +2,7 @@ package com.example.newslistservice.controller;
 
 import com.example.newslistservice.domain.News;
 import com.example.newslistservice.dto.DetailNewsDTO;
+import com.example.newslistservice.dto.NewsDetailDTO;
 import com.example.newslistservice.dto.NewsListDTO;
 import com.example.newslistservice.service.NewsService;
 import jakarta.validation.Valid;
@@ -64,7 +65,7 @@ public class NewsController {
     }
 
     @GetMapping("/detail")
-    public DetailNewsDTO getNewsId(@RequestParam Long id) {
+    public NewsDetailDTO getNewsId(@RequestParam Long id) {
         return newsService.getNewsId(id);
     }
 

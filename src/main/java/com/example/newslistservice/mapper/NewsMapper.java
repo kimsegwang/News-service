@@ -14,7 +14,7 @@ public interface NewsMapper {
 
     List<News> selectNewsList();
 
-    List<DetailNewsDTO>  selectNewsById(Long id);
+    DetailNewsDTO  selectNewsById(Long id);
 
     void deleteByIds(List<Long> ids);
 
