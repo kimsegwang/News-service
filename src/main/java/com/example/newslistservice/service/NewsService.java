@@ -49,6 +49,18 @@ public class NewsService {
         }
     }
 
+    @Transactional
+    public void updateNews(News news) {
+        // 다중 이미지 경로를 처리하여 List<String> 형태로 변환
+        List<String> imagePaths = parseImagePaths(news.getImg());
+
+        // 이미지를 세미콜론으로 구분된 하나의 문자열로 결합
+        String imgString = String.join(";", imagePaths);
+        news.setImg(imgString);  // 뉴스 객체에 결합된 이미지 경로 설정
+
+        newsMapper.updateNews(news);// Mapper 호출
+    }
+
 
 
 
@@ -87,8 +99,5 @@ public class NewsService {
         }
     }
 
-    @Transactional
-    public void updateNews(News news) {
-        newsMapper.updateNews(news);// Mapper 호출
-    }
+
 }

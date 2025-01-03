@@ -26,6 +26,12 @@ public class NewsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdNews);
     }
 
+    @PutMapping
+    public void put(@Valid @RequestBody News news) {
+        newsService.updateNews(news);
+
+    }
+
 
     @GetMapping
     public NewsListDTO getNews(
@@ -75,10 +81,7 @@ public class NewsController {
         newsService.removeNews(ids);
     }
 
-    @PutMapping
-    public void put(@Valid @RequestBody News news) {
-        newsService.updateNews(news);
-    }
+
 
 }
 
