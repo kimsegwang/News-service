@@ -1,5 +1,6 @@
 package com.example.newslistservice.service;
 
+import com.example.newslistservice.S3.S3Service;
 import com.example.newslistservice.client.FileClient;
 import com.example.newslistservice.domain.News;
 import com.example.newslistservice.dto.DetailNewsDTO;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +23,7 @@ public class NewsService {
 
     private final NewsMapper newsMapper;
     private final FileClient fileClient;
+    private final S3Service s3Service;
 
     // 이미지 경로를 세미콜론으로 구분하여 List<String>으로 변환하는 메서드
     public List<String> parseImagePaths(String img) {
@@ -32,14 +35,21 @@ public class NewsService {
 
     // 뉴스 생성 메서드
     @Transactional
-    public News createNews(News news) {
-        // 다중 이미지 경로를 처리하여 List<String> 형태로 변환
-        List<String> imagePaths = parseImagePaths(news.getImg());
+    public News createNews(News news) throws IOException {
+        if (news.getImg() != null && !news.getImg().isEmpty()) {
+            List<String> str = Arrays.asList(news.getImg().split(";"));
+            System.out.println("이미지는 ::" + str);
+            StringBuilder s3Urls = new StringBuilder();
+            for (String file : str) {
+                String s3Url = s3Service.uploadFile(file);
+                if (s3Urls.length()>0){
+                    s3Urls.append(";");
+                }
+                s3Urls.append(s3Url);
 
-        // 이미지를 세미콜론으로 구분된 하나의 문자열로 결합
-        String imgString = String.join(";", imagePaths);
-        news.setImg(imgString);  // 뉴스 객체에 결합된 이미지 경로 설정
-
+            }
+            news.setImg(s3Urls.toString());
+        }
         // Mapper 호출하여 DB에 저장
         int result = newsMapper.insertNews(news);
         if (result > 0) {
@@ -50,15 +60,23 @@ public class NewsService {
     }
 
     @Transactional
-    public void updateNews(News news) {
-        // 다중 이미지 경로를 처리하여 List<String> 형태로 변환
-        List<String> imagePaths = parseImagePaths(news.getImg());
+    public void updateNews(News news) throws IOException {
+        if (news.getImg() != null && !news.getImg().isEmpty()) {
+            List<String> str = Arrays.asList(news.getImg().split(";"));
+            System.out.println("이미지는 ::" + str);
+            StringBuilder s3Urls = new StringBuilder();
+            for (String file : str) {
+                String s3Url = s3Service.uploadFile(file);
+                if (s3Urls.length()>0){
+                    s3Urls.append(";");
+                }
+                s3Urls.append(s3Url);
 
-        // 이미지를 세미콜론으로 구분된 하나의 문자열로 결합
-        String imgString = String.join(";", imagePaths);
-        news.setImg(imgString);  // 뉴스 객체에 결합된 이미지 경로 설정
-
+            }
+            news.setImg(s3Urls.toString());
+        }
         newsMapper.updateNews(news);// Mapper 호출
+
     }
 
 

@@ -27,4 +27,12 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
 
 swfm:
-  file-service-url: ${SELECT_SERVICE_URL:http://localhost:7009}/selectImage
+  file-service-url: ${SELECT_SERVICE_URL:http://localhost:7003}/selectImage
+
+aws:
+  region: ${AWS_REGION:ap-northeast-2}
+  credentials:
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}
+  s3:
+    bucket-name: img-bucket-2024
