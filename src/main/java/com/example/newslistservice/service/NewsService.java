@@ -98,9 +98,13 @@ public class NewsService {
 
         String[] arr = newsList.getImg().split(";");
         List<String> imgPaths = Arrays.asList(arr);
-
+        List<String> imgList = List.of();
+        if (!imgPaths.getFirst().isEmpty()) {
+            imgList = fileClient.getImg(imgPaths);
+            System.out.println("이미지 리스트는 :: "+imgList);
+        }
         // 3. FeignClient를 사용해 이미지 정보 가져오기
-        List<String> imgList = fileClient.getImg(imgPaths);
+
         // Products와 인코딩된 이미지를 매칭하여 DTO 리스트를 생성
 
         return NewsDetailDTO.builder()
