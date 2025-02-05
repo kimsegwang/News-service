@@ -1,6 +1,7 @@
 package com.example.newslistservice.mapper;
 
 import com.example.newslistservice.domain.News;
+import com.example.newslistservice.dto.CreateNewsRequestDTO;
 import com.example.newslistservice.dto.DetailNewsDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Mapper
 public interface NewsMapper {
-    int insertNews(News news);
+    int insertNews(CreateNewsRequestDTO news);
 
     List<News> selectNewsList();
 
@@ -18,6 +19,6 @@ public interface NewsMapper {
 
     void deleteByIds(List<Long> ids);
 
-    void updateNews(News news);
+    int updateNews(CreateNewsRequestDTO news);
 
 }

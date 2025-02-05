@@ -35,5 +35,5 @@ public class News {
 
     @Column("img") // 여러 이미지 경로를 ';'로 연결
     private String img;
-}
 
+}

@@ -1,15 +1,16 @@
 package com.example.newslistservice.controller;
 
 import com.example.newslistservice.domain.News;
-import com.example.newslistservice.dto.DetailNewsDTO;
+import com.example.newslistservice.dto.CreateNewsRequestDTO;
 import com.example.newslistservice.dto.NewsDetailDTO;
 import com.example.newslistservice.dto.NewsListDTO;
 import com.example.newslistservice.service.NewsService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,15 +22,39 @@ public class NewsController {
 
     private final NewsService newsService;
 
-    @PostMapping
-    public ResponseEntity<News> post(@Valid @RequestBody News news) throws IOException {
-        News createdNews = newsService.createNews(news);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CreateNewsRequestDTO> post(
+            @RequestPart("title") String title,  // 제목 받기
+            @RequestPart("content") String content,  // 내용 받기
+            @RequestPart(value = "img", required = false) List<MultipartFile> images  // 이미지 파일들 받기
+    ) throws IOException {
+        System.out.println("이미지는 :::" + images);
+        CreateNewsRequestDTO news = new CreateNewsRequestDTO();
+        news.setTitle(title);
+        news.setContent(content);
+
+        // 이미지가 있다면 처리
+        CreateNewsRequestDTO createdNews = newsService.createNews(news, images);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(createdNews);
     }
 
-    @PutMapping
-    public void put(@Valid @RequestBody News news) throws IOException {
-        newsService.updateNews(news);
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CreateNewsRequestDTO> put(
+            @RequestParam("id") Long id,
+            @RequestPart("title") String title,  // 제목 받기
+            @RequestPart("content") String content,  // 내용 받기
+            @RequestPart(value = "img", required = false) List<MultipartFile> images)
+            throws IOException {
+        System.out.println("이미지::::"+images);
+        CreateNewsRequestDTO news = new CreateNewsRequestDTO();
+        news.setId(id);
+        news.setTitle(title);
+        news.setContent(content);
+
+        CreateNewsRequestDTO createdNews = newsService.updateNews(news, images);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdNews);
 
     }
 
@@ -83,7 +108,4 @@ public class NewsController {
     }
 
 
-
 }
-
-

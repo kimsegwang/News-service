@@ -3,6 +3,7 @@ package com.example.newslistservice.S3;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
@@ -22,11 +23,17 @@ public class S3Service {
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
 
-    public String uploadFile(String filePath) {
-        File file = new File(filePath);  // String으로 받은 파일 경로를 File 객체로 변환
-        String fileName = "news/" + UUID.randomUUID() + "_" + file.getName(); // 파일명 중복 방지
+    public String uploadFile(MultipartFile multipartFile) {
+        if (multipartFile.isEmpty()) {
+            throw new IllegalArgumentException("업로드할 파일이 없습니다.");
+        }
 
-        try (FileInputStream inputStream = new FileInputStream(file)) {
+        try {
+            // MultipartFile을 임시 파일로 변환
+            File file = convertMultiPartToFile(multipartFile);
+            String fileName = "news/" + UUID.randomUUID() + "_" + multipartFile.getOriginalFilename(); // 파일명 중복 방지
+
+            // S3 업로드 요청 생성
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(fileName)
@@ -34,7 +41,10 @@ public class S3Service {
 
             // 파일을 S3로 업로드
             PutObjectResponse response = s3Client.putObject(putObjectRequest,
-                    RequestBody.fromInputStream(inputStream, file.length()));
+                    RequestBody.fromFile(file));
+
+            // 파일 삭제 (임시 파일이므로 업로드 후 삭제)
+            file.delete();
 
             // 업로드 성공 여부 확인
             if (response.sdkHttpResponse().isSuccessful()) {
@@ -46,5 +56,11 @@ public class S3Service {
         } catch (IOException e) {
             throw new RuntimeException("파일 업로드 중 오류 발생", e);
         }
+    }
+
+    private File convertMultiPartToFile(MultipartFile file) throws IOException {
+        File convFile = File.createTempFile("temp", null);
+        file.transferTo(convFile);
+        return convFile;
     }
 }
